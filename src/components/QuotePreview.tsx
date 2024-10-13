@@ -33,9 +33,19 @@ export default function QuotePreview({
         canvas.width = 1050; // 1080 + 30 (15px padding on each side) + 40 (20px additional padding on each side)
         canvas.height = 1090; // 1080 + 30 (15px padding on each side)
 
-        // Light background
-        ctx.fillStyle = '#F0F4F8';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Create a gradient object
+var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+
+// Define the color stops for the gradient
+gradient.addColorStop(0, '#ace0f9');  // Start color
+gradient.addColorStop(1, '#fff1eb');  // End color
+
+// Use the gradient as the fill style
+ctx.fillStyle = gradient;
+
+// Fill the background with the gradient
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
 
         // Draw background image if provided, otherwise use gradient
         if (background) {
