@@ -30,8 +30,8 @@ export default function QuotePreview({
     const drawImage = async () => {
       try {
         // Increase canvas size to accommodate padding
-        canvas.width = 1150; // 1080 + 30 (15px padding on each side) + 40 (20px additional padding on each side)
-        canvas.height = 1110; // 1080 + 30 (15px padding on each side)
+        canvas.width = 1050; // 1080 + 30 (15px padding on each side) + 40 (20px additional padding on each side)
+        canvas.height = 1090; // 1080 + 30 (15px padding on each side)
 
         // Light background
         ctx.fillStyle = '#F0F4F8';
@@ -52,21 +52,27 @@ export default function QuotePreview({
           gradient.addColorStop(0, '#f87171');
           gradient.addColorStop(1, '#dc2626');
           ctx.fillStyle = gradient;
-          roundRect(ctx, 90, 70, canvas.width - 180, 270, 20)
+          roundRect(ctx, 90, 70, canvas.width - 180, 270, 45)
         }
 
-        // Enhanced channel profile picture with shadow and border
         ctx.save();
         ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
         ctx.shadowBlur = 15;
         ctx.beginPath();
-        ctx.arc(canvas.width / 2, 320, 90, 0, Math.PI * 2)
+        ctx.arc(canvas.width / 2, 320, 93, 0, Math.PI * 2);
         ctx.fillStyle = '#FFFFFF';
         ctx.fill();
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, 320, 90, 0, Math.PI * 2);
         ctx.clip();
         const channelImage = await loadImage(videoDetails.channelThumbnailUrl);
-        ctx.drawImage(channelImage, canvas.width / 2 - 85, 235, 170, 170);
+        ctx.drawImage(channelImage, canvas.width / 2 - 90, 231, 180, 180);
         ctx.restore();
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, 320, 93, 0, Math.PI * 2);
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 7;
+        ctx.stroke();
 
         // Title with improved styling
         ctx.font = 'bold 56px Arial';
@@ -80,7 +86,7 @@ export default function QuotePreview({
         ctx.shadowBlur = 15;
         ctx.shadowOffsetY = 5;
         ctx.fillStyle = '#FFFFFF';
-        roundRect(ctx, 110, 520, canvas.width - 220, 340, 20);
+        roundRect(ctx, 110, 520, canvas.width - 220, 340, 40);
         ctx.restore();
 
         // Enhanced commentator profile picture with border and effect
@@ -93,19 +99,10 @@ export default function QuotePreview({
         ctx.arc(185, 605, 45, 0, Math.PI * 2);
         ctx.clip();
         const commentatorImage = await loadImage(comment.authorProfileImageUrl);
-        ctx.drawImage(commentatorImage, 140, 560, 90, 90);
+        ctx.drawImage(commentatorImage, 130, 560, 110, 89);
         ctx.restore();
 
-        // Add circular glow effect to the profile picture
-        ctx.save();
-        const glowGradient = ctx.createRadialGradient(185, 605, 45, 185, 605, 60);
-        glowGradient.addColorStop(0, 'rgba(220, 38, 38, 0.4)');
-        glowGradient.addColorStop(1, 'rgba(220, 38, 38, 0)');
-        ctx.fillStyle = glowGradient;
-        ctx.beginPath();
-        ctx.arc(185, 605, 60, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+       
 
         // Comment author and text with improved styling
         ctx.fillStyle = '#1F2937';
