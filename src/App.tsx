@@ -56,7 +56,7 @@ function App() {
   return (
     <div className="min-h-screen bg-pink-200 p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden">
-        <h1 className="text-3xl font-bold text-center py-6 bg-gradient-to-r from-red-600 to-red-800 text-white">YouTube Quote Maker</h1>
+        <h1 className="text-3xl font-bold text-center py-6 bg-gradient-to-r from-red-600 to-red-800 text-white">YouTube Quote Maker by Pritam</h1>
         <div className="p-6 space-y-6">
           <VideoInput onSubmit={handleVideoSubmit} />
           {error && (
