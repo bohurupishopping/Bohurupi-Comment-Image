@@ -1,68 +1,126 @@
 import React from 'react';
-import type { CommentData, VideoData } from '../utils/youtubeApi';
+import type { CommentData, VideoData } from '../../utils/youtubeApi';
 
 interface ModernLayoutProps {
   ctx: CanvasRenderingContext2D;
   comment: CommentData;
   videoDetails: VideoData;
   background: string;
+  textSize: number;
+  commentPosition: number;
 }
 
-export const drawModernLayout = async ({ ctx, comment, videoDetails, background }: ModernLayoutProps) => {
+export const drawModernLayout = async ({ ctx, comment, videoDetails, background, textSize, commentPosition }: ModernLayoutProps) => {
   // Canvas dimensions
   const canvas = ctx.canvas;
   canvas.width = 1200;
   canvas.height = 1200;
 
-  // Background gradient
+  // Multi-color background gradient
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
   gradient.addColorStop(0, '#f3e8ff');
-  gradient.addColorStop(1, '#dbeafe');
+  gradient.addColorStop(0.3, '#dbeafe');
+  gradient.addColorStop(0.6, '#f0fdf4');
+  gradient.addColorStop(1, '#fef3c7');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  // Add subtle noise texture
+  ctx.save();
+  ctx.globalAlpha = 0.1;
+  for (let i = 0; i < canvas.width; i += 2) {
+    for (let j = 0; j < canvas.height; j += 2) {
+      const val = Math.floor(Math.random() * 255);
+      ctx.fillStyle = `rgba(${val}, ${val}, ${val}, 0.1)`;
+      ctx.fillRect(i, j, 1, 1);
+    }
+  }
+  ctx.restore();
+
+  let hasBackgroundImage = false;
+  
   // Draw background image if provided
   if (background) {
     try {
       const backgroundImage = await loadImage(background);
       ctx.save();
       ctx.beginPath();
-      roundRect(ctx, 100, 100, canvas.width - 200, canvas.height - 200, 30);
-      ctx.clip();
-      ctx.drawImage(backgroundImage, 100, 100, canvas.width - 200, canvas.height - 200);
+      ctx.filter = 'blur(8px)';
+      ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
       ctx.restore();
+
+      // Dark overlay for better text contrast
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      hasBackgroundImage = true;
     } catch (err) {
       console.error('Error loading background image:', err);
     }
   }
 
-  // Comment box
-  ctx.fillStyle = '#ffffff';
-  roundRect(ctx, 100, 100, 1000, 800, 30);
-  ctx.fill();
+  // Set text color based on background
+  const textColor = hasBackgroundImage ? '#ffffff' : '#1F2937';
+
+  // Commenter profile picture
+  try {
+    const profileImage = await loadImage(comment.authorProfileImageUrl);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2, 200, 60, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.clip();
+    ctx.drawImage(profileImage, canvas.width / 2 - 60, 140, 120, 120);
+    ctx.restore();
+  } catch (err) {
+    console.error('Error loading commenter profile image:', err);
+  }
+
+  // Large decorative quote marks with shadow
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetX = 5;
+  ctx.shadowOffsetY = 5;
+  
+  ctx.fillStyle = textColor;
+  ctx.font = 'bold 300px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('“', canvas.width / 2 - 450, commentPosition - 100);
+  ctx.fillText('”', canvas.width / 2 + 450, commentPosition + 400);
+  ctx.restore();
 
   // Comment text
-  ctx.fillStyle = '#1F2937';
-  ctx.font = 'bold 36px Arial';
-  ctx.textAlign = 'left';
-  wrapText(ctx, comment.text, 150, 200, 900, 50);
+  ctx.fillStyle = textColor;
+  ctx.font = `italic ${textSize}px Georgia`;
+  ctx.textAlign = 'center';
+  wrapText(ctx, comment.text, canvas.width / 2, commentPosition, 1000, 60);
 
-  // Author name
-  ctx.fillStyle = '#4B5563';
-  ctx.font = 'bold 28px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText(`— ${comment.authorName}`, 150, 750);
+  // Commenter attribution
+  ctx.fillStyle = textColor;
+  ctx.font = 'bold 36px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText(`— ${comment.authorName}`, canvas.width / 2, 350);
 
-  // Draw channel logo
+  // Decorative line
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2 - 200, 400);
+  ctx.lineTo(canvas.width / 2 + 200, 400);
+  ctx.strokeStyle = '#dbeafe';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Channel details
   try {
     const channelImage = await loadImage(videoDetails.channelThumbnailUrl);
     ctx.save();
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, 900, 50, 0, Math.PI * 2);
+    ctx.arc(canvas.width / 2, 900, 70, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
     ctx.clip();
-    ctx.drawImage(channelImage, canvas.width / 2 - 50, 850, 100, 100);
+    ctx.drawImage(channelImage, canvas.width / 2 - 70, 830, 140, 140);
     ctx.restore();
   } catch (err) {
     console.error('Error loading channel logo:', err);
@@ -70,7 +128,7 @@ export const drawModernLayout = async ({ ctx, comment, videoDetails, background 
 
   // YouTube icon and channel name
   drawYouTubeIcon(ctx, canvas.width / 2 - 130, 1005, 45, 45);
-  ctx.fillStyle = '#4B5563';
+  ctx.fillStyle = textColor;
   ctx.font = 'bold 30px Arial';
   ctx.textAlign = 'left';
   ctx.fillText(videoDetails.channelTitle, canvas.width / 2 - 70, 1040);

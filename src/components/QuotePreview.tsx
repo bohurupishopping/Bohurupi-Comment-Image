@@ -52,7 +52,7 @@ export default function QuotePreview({
             await drawMinimalLayout({ ctx, comment, videoDetails, background, textSize, commentPosition });
             break;
           case 'modern':
-            await drawModernLayout({ ctx, comment, videoDetails, background });
+            await drawModernLayout({ ctx, comment, videoDetails, background, textSize, commentPosition });
             break;
           case 'vintage':
             await drawVintageLayout({ ctx, comment, videoDetails, background });
