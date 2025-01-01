@@ -94,6 +94,7 @@ function App() {
                       comment={selectedComment}
                       videoDetails={videoDetails}
                       background={background}
+                      layout={layout}
                     />
                   )}
                 </div>
