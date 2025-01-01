@@ -17,6 +17,15 @@ export interface VideoData {
   videoThumbnailUrl: string;
 }
 
+const sanitizeCommentText = (text: string): string => {
+  // Remove unwanted special characters and numeric codes
+  return text
+    .replace(/[#$@]/g, '')
+    .replace(/\b\d{2,}\b/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+};
+
 export const fetchVideoComments = async (videoId: string): Promise<CommentData[]> => {
   if (!API_KEY) {
     throw new Error('YouTube API key is not set');
@@ -31,7 +40,7 @@ export const fetchVideoComments = async (videoId: string): Promise<CommentData[]
       throw new Error('No comments found');
     }
     return data.items.map((item: any) => ({
-      text: item.snippet.topLevelComment.snippet.textDisplay,
+      text: sanitizeCommentText(item.snippet.topLevelComment.snippet.textDisplay),
       authorName: item.snippet.topLevelComment.snippet.authorDisplayName,
       authorProfileImageUrl: item.snippet.topLevelComment.snippet.authorProfileImageUrl.replace('http://', 'https://'),
     }));

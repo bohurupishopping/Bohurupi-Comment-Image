@@ -3,6 +3,7 @@ import { Youtube, Upload, Layout, Image as ImageIcon, Download } from 'lucide-re
 import VideoInput from './components/VideoInput';
 import CommentSelector from './components/CommentSelector';
 import BackgroundUploader from './components/BackgroundUploader';
+import VideoThumbnailUploader from './components/VideoThumbnailUploader';
 import LayoutSelector from './components/LayoutSelector';
 import QuotePreview from './components/QuotePreview';
 import { fetchVideoComments, fetchVideoDetails, extractVideoId, CommentData, VideoData } from './utils/youtubeApi';
@@ -79,7 +80,15 @@ function App() {
                 <div className="space-y-4">
                   <CommentSelector comments={comments} onSelect={setSelectedComment} />
                   <div className="flex space-x-4">
-                    <BackgroundUploader onUpload={setBackground} />
+                    <div className="space-y-4">
+                      <BackgroundUploader onUpload={setBackground} />
+                      {videoUrl && (
+                        <VideoThumbnailUploader
+                          videoUrl={videoUrl}
+                          onUpload={setBackground}
+                        />
+                      )}
+                    </div>
                     <LayoutSelector onSelect={setLayout} />
                   </div>
                   <TextSizeAdjuster textSize={textSize} onTextSizeChange={setTextSize} />
