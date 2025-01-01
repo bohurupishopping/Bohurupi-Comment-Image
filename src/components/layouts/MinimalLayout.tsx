@@ -1,14 +1,16 @@
 import React from 'react';
-import type { CommentData, VideoData } from '../utils/youtubeApi';
+import type { CommentData, VideoData } from '../../utils/youtubeApi';
 
 interface MinimalLayoutProps {
   ctx: CanvasRenderingContext2D;
   comment: CommentData;
   videoDetails: VideoData;
   background: string;
+  textSize: number;
+  commentPosition: number;
 }
 
-export const drawMinimalLayout = async ({ ctx, comment, videoDetails, background }: MinimalLayoutProps) => {
+export const drawMinimalLayout = async ({ ctx, comment, videoDetails, background, textSize, commentPosition }: MinimalLayoutProps) => {
   // Canvas dimensions
   const canvas = ctx.canvas;
   canvas.width = 1200;
@@ -59,9 +61,9 @@ export const drawMinimalLayout = async ({ ctx, comment, videoDetails, background
 
   // Comment text (mid)
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 48px Arial';
+  ctx.font = `bold ${textSize}px Arial`;
   ctx.textAlign = 'center';
-  wrapText(ctx, comment.text, canvas.width / 2, 600, 1000, 60);
+  wrapText(ctx, comment.text, canvas.width / 2, commentPosition, 1000, 60);
 
   // Channel details (bottom)
   try {

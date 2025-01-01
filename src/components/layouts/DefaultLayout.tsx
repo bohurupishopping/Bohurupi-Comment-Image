@@ -1,14 +1,15 @@
 import React from 'react';
-import type { CommentData, VideoData } from '../utils/youtubeApi';
+import type { CommentData, VideoData } from '../../utils/youtubeApi';
 
 interface DefaultLayoutProps {
   ctx: CanvasRenderingContext2D;
   comment: CommentData;
   videoDetails: VideoData;
   background: string;
+  textSize: number;
 }
 
-export const drawDefaultLayout = async ({ ctx, comment, videoDetails, background }: DefaultLayoutProps) => {
+export const drawDefaultLayout = async ({ ctx, comment, videoDetails, background, textSize }: DefaultLayoutProps) => {
   // Increase canvas size to accommodate padding
   const canvas = ctx.canvas;
   canvas.width = 1050; // 1080 + 30 (15px padding on each side) + 40 (20px additional padding on each side)
@@ -111,7 +112,7 @@ export const drawDefaultLayout = async ({ ctx, comment, videoDetails, background
   ctx.textAlign = 'left';
   ctx.fillText(comment.authorName, 255, 600);
   ctx.fillStyle = '#4B5563';
-  ctx.font = '36px Arial';
+  ctx.font = `${textSize}px Arial`;
   wrapText(ctx, comment.text, 275, 645, canvas.width - 370, 38);
 
   // Video title with improved styling

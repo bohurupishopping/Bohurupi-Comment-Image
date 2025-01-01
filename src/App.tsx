@@ -6,6 +6,8 @@ import BackgroundUploader from './components/BackgroundUploader';
 import LayoutSelector from './components/LayoutSelector';
 import QuotePreview from './components/QuotePreview';
 import { fetchVideoComments, fetchVideoDetails, extractVideoId, CommentData, VideoData } from './utils/youtubeApi';
+import { TextSizeAdjuster } from './components/TextSizeAdjuster';
+import { CommentPositionAdjuster } from './components/CommentPositionAdjuster';
 
 function App() {
   const [videoUrl, setVideoUrl] = useState('');
@@ -17,6 +19,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [textSize, setTextSize] = useState(48);
+  const [commentPosition, setCommentPosition] = useState(450);
 
   const handleVideoSubmit = async (url: string) => {
     setVideoUrl(url);
@@ -78,6 +82,8 @@ function App() {
                     <BackgroundUploader onUpload={setBackground} />
                     <LayoutSelector onSelect={setLayout} />
                   </div>
+                  <TextSizeAdjuster textSize={textSize} onTextSizeChange={setTextSize} />
+                  <CommentPositionAdjuster position={commentPosition} onPositionChange={setCommentPosition} />
                   <button
                     onClick={handleGenerate}
                     disabled={!selectedComment || isGenerating}
@@ -95,6 +101,8 @@ function App() {
                       videoDetails={videoDetails}
                       background={background}
                       layout={layout}
+                      textSize={textSize}
+                      commentPosition={commentPosition}
                     />
                   )}
                 </div>

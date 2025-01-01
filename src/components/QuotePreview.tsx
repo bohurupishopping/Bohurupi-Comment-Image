@@ -11,6 +11,8 @@ interface QuotePreviewProps {
   videoDetails: VideoData;
   background: string;
   layout: string;
+  textSize: number;
+  commentPosition: number;
 }
 
 export default function QuotePreview({
@@ -18,6 +20,8 @@ export default function QuotePreview({
   videoDetails,
   background,
   layout,
+  textSize,
+  commentPosition,
 }: QuotePreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -45,7 +49,7 @@ export default function QuotePreview({
         // Draw layout based on selected layout
         switch (layout) {
           case 'minimal':
-            await drawMinimalLayout({ ctx, comment, videoDetails, background });
+            await drawMinimalLayout({ ctx, comment, videoDetails, background, textSize, commentPosition });
             break;
           case 'modern':
             await drawModernLayout({ ctx, comment, videoDetails, background });
@@ -54,7 +58,7 @@ export default function QuotePreview({
             await drawVintageLayout({ ctx, comment, videoDetails, background });
             break;
           default:
-            await drawDefaultLayout({ ctx, comment, videoDetails, background });
+            await drawDefaultLayout({ ctx, comment, videoDetails, background, textSize });
             break;
         }
 
@@ -66,7 +70,7 @@ export default function QuotePreview({
     };
 
     drawImage();
-  }, [comment, videoDetails, background, layout]);
+  }, [comment, videoDetails, background, layout, textSize, commentPosition]);
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
