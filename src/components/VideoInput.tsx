@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Youtube } from 'lucide-react';
+import { Youtube, Search } from 'lucide-react';
 
 interface VideoInputProps {
   onSubmit: (url: string) => void;
@@ -27,7 +27,7 @@ const VideoInput: React.FC<VideoInputProps> = ({ onSubmit }) => {
         type="submit"
         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-3 rounded transition duration-300 ease-in-out"
       >
-        Fetch Comments
+        <Search className="h-5 w-5" />
       </button>
     </form>
   );
