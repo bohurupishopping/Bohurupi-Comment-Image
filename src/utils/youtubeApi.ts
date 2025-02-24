@@ -42,7 +42,31 @@ export const fetchVideoDetails = async (videoId: string): Promise<VideoData> => 
 };
 
 export const extractVideoId = (url: string): string | null => {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
+  if (!url) return null;
+
+  // Handle mobile URLs
+  url = url.replace('m.youtube.com', 'youtube.com');
+
+  // Handle various YouTube URL formats
+  const patterns = [
+    // Standard watch URLs
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^#&?]*)/,
+    // Short youtu.be URLs
+    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^#&?]*)/,
+    // Embed URLs
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^#&?]*)/,
+    // Short URLs with v parameter
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/v\/([^#&?]*)/,
+    // Channel video URLs
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/.*[?&]v=([^#&?]*)/
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1] && match[1].length === 11) {
+      return match[1];
+    }
+  }
+
+  return null;
 };
