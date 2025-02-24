@@ -1,0 +1,59 @@
+
+      <svg xmlns="http://www.w3.org/2000/svg" 
+        width="1000" 
+        height="500" 
+        viewBox="0 0 1000 500"
+      >
+        <defs>
+        <filter id="noise">
+          <feTurbulence 
+            type="fractalNoise" 
+            baseFrequency="0.8" 
+            numOctaves="3" 
+            stitchTiles="stitch"
+          />
+          <feComponentTransfer>
+            <feFuncR type="table" tableValues="1 1"/>
+            <feFuncG type="table" tableValues="1 1"/>
+            <feFuncB type="table" tableValues="1 1"/>
+          </feComponentTransfer>
+        </filter>
+        <radialGradient 
+          id="grad0" 
+          cx="3.0172413793103448%" 
+          cy="1.8518518518518516%" 
+          r="65%"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stop-color="#6553e9" stop-opacity="1" />
+          <stop offset="15%" stop-color="#6553e9" stop-opacity="0.85" />
+          <stop offset="30%" stop-color="#6553e9" stop-opacity="0.6" />
+          <stop offset="50%" stop-color="#6553e9" stop-opacity="0.3" />
+          <stop offset="70%" stop-color="#6553e9" stop-opacity="0.1" />
+          <stop offset="100%" stop-color="#6553e9" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient 
+          id="grad1" 
+          cx="90.94827586206897%" 
+          cy="97.57834757834758%" 
+          r="65%"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0%" stop-color="#ec948e" stop-opacity="1" />
+          <stop offset="15%" stop-color="#ec948e" stop-opacity="0.85" />
+          <stop offset="30%" stop-color="#ec948e" stop-opacity="0.6" />
+          <stop offset="50%" stop-color="#ec948e" stop-opacity="0.3" />
+          <stop offset="70%" stop-color="#ec948e" stop-opacity="0.1" />
+          <stop offset="100%" stop-color="#ec948e" stop-opacity="0" />
+        </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="white"/><g mix-blend-mode="normal">
+        <rect width="100%" height="100%" fill="url(#grad0)"/>
+        <rect width="100%" height="100%" fill="url(#grad1)"/></g>
+        <rect 
+          width="100%" 
+          height="100%" 
+          filter="url(#noise)" 
+          opacity="0.75"
+          fill="#ffffff" 
+        /></svg>

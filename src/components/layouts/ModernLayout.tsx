@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CommentData, VideoData } from '../../utils/youtubeApi';
 
 interface ModernLayoutProps {

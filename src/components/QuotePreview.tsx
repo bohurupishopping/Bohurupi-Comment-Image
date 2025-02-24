@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Download, RefreshCw } from 'lucide-react';
 import type { CommentData, VideoData } from '../utils/youtubeApi';
 import { drawDefaultLayout } from './layouts/DefaultLayout';

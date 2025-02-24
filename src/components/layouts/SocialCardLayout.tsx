@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CommentData, VideoData } from '../../utils/youtubeApi';
 import { loadImage, FALLBACK_IMAGES } from '../../utils/imageLoader';
 
@@ -9,7 +8,7 @@ interface SocialCardLayoutProps {
   background: string;
 }
 
-export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, background }: SocialCardLayoutProps) => {
+export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: SocialCardLayoutProps) => {
   const canvas = ctx.canvas;
   canvas.width = 1024;
   canvas.height = 1024;
@@ -37,7 +36,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
     roundRect(ctx, canvas.width - durationWidth - 20, 20, durationWidth, 32, 6);
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.font = '600 16px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 18px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(videoDetails.duration, canvas.width - durationWidth/2 - 20, 42);
     ctx.restore();
@@ -90,7 +89,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
     ctx.textAlign = 'center';
     
     // Channel name with larger font
-    ctx.font = '600 20px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
     ctx.fillStyle = '#0f0f0f';
     ctx.fillText(videoDetails.channelTitle, canvas.width / 2, contentStartY + 90);
 
@@ -109,7 +108,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
     }
 
     // Channel stats with larger font
-    ctx.font = '400 16px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '400 18px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
     ctx.fillStyle = '#606060';
     ctx.fillText(videoDetails.publishedAt, canvas.width / 2, contentStartY + 120);
   } catch (err) {
@@ -119,9 +118,9 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
   // Video title with larger font and centered
   const titleY = contentStartY + 160;
   ctx.fillStyle = '#0f0f0f';
-  ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+  ctx.font = '600 28px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
   ctx.textAlign = 'center';
-  wrapText(ctx, videoDetails.title, canvas.width / 2, titleY, canvas.width - 100, 36);
+  wrapText(ctx, videoDetails.title, canvas.width / 2, titleY, canvas.width - 100, 42);
   
   // Video stats with improved icons and centered spacing
   const statsY = titleY + 50;
@@ -146,21 +145,21 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
   let statX = (canvas.width - totalWidth) / 2;
 
   stats.forEach((stat, index) => {
-    // Draw icon
+    // Draw icon with larger size
     ctx.fillStyle = '#606060';
-    ctx.font = '400 18px -apple-system';
+    ctx.font = '500 24px -apple-system';
     ctx.fillText(stat.icon, statX, statsY);
-    statX += 28;
+    statX += 32;
     
-    // Draw value
-    ctx.font = '400 16px -apple-system';
+    // Draw value with enhanced typography
+    ctx.font = '500 20px -apple-system';
     ctx.fillText(stat.value, statX, statsY);
-    statX += ctx.measureText(stat.value).width + 28;
+    statX += ctx.measureText(stat.value).width + 32;
     
-    // Draw separator
+    // Draw separator with adjusted spacing
     if (index < stats.length - 1) {
-      ctx.fillText('•', statX - 14, statsY);
-      statX += 28;
+      ctx.fillText('•', statX - 16, statsY);
+      statX += 32;
     }
   });
 
@@ -177,7 +176,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
 
   // Comments header centered
   ctx.fillStyle = '#0f0f0f';
-  ctx.font = '600 20px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+  ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('💬 Comments', canvas.width / 2, commentsStartY + 10);
 
@@ -206,13 +205,13 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails, backgro
     
     // Author name
     ctx.fillStyle = '#0f0f0f';
-    ctx.font = '600 18px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 22px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
     ctx.fillText(comment.authorName, canvas.width / 2, commentY + commentAvatarSize + 30);
 
     // Comment text
     ctx.fillStyle = '#0f0f0f';
-    ctx.font = '400 20px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
-    wrapText(ctx, comment.text, canvas.width / 2, commentY + commentAvatarSize + 70, canvas.width - 100, 32);
+    ctx.font = '400 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    wrapText(ctx, comment.text, canvas.width / 2, commentY + commentAvatarSize + 70, canvas.width - 100, 36);
   } catch (err) {
     console.error('Error loading commenter image:', err);
   }

@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CommentData, VideoData } from '../../utils/youtubeApi';
 
 interface DefaultLayoutProps {
@@ -9,7 +8,7 @@ interface DefaultLayoutProps {
   textSize: number;
 }
 
-export const drawDefaultLayout = async ({ ctx, comment, videoDetails, background, textSize }: DefaultLayoutProps) => {
+export const drawDefaultLayout = async ({ ctx, comment, videoDetails, textSize }: DefaultLayoutProps) => {
   const canvas = ctx.canvas;
   canvas.width = 1024;
   canvas.height = 1024;

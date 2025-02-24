@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Youtube, Upload, Layout, Image as ImageIcon, Download } from 'lucide-react';
+import { useState } from 'react';
 import VideoInput from './components/VideoInput';
 import CommentSelector from './components/CommentSelector';
 import BackgroundUploader from './components/BackgroundUploader';
@@ -53,9 +52,11 @@ function App() {
     <div 
       className="min-h-screen p-4 md:p-8"
       style={{
-        background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='10' numOctaves='3' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='table' tableValues='1.00 1.00'/%3E%3CfeFuncG type='table' tableValues='1.00 1.00'/%3E%3CfeFuncB type='table' tableValues='1.00 1.00'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.75'/%3E%3C/svg%3E"), radial-gradient(circle at 90.94827586206897% 97.57834757834758%, #ec948e 0px, transparent 70%), radial-gradient(circle at 3.0172413793103448% 1.8518518518518516%, #6553e9 0px, transparent 70%)`,
+        background: `url("/bg.svg")`,
         backgroundColor: 'white',
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
       }}
     >
       <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl overflow-hidden">

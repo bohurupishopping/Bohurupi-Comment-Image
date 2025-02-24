@@ -1,4 +1,3 @@
-import React from 'react';
 import type { CommentData, VideoData } from '../../utils/youtubeApi';
 import { loadImage, FALLBACK_IMAGES } from '../../utils/imageLoader';
 
@@ -215,7 +214,6 @@ export const drawMinimalLayout = async ({
   ctx.restore();
 
   // Right section (comment) with dynamic positioning
-  const rightX = leftWidth + 60;
   const rightWidth = canvas.width - leftWidth - 120;
   const centerX = leftWidth + (canvas.width - leftWidth) / 2;
 

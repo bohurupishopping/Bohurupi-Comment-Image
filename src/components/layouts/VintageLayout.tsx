@@ -1,5 +1,4 @@
-import React from 'react';
-import type { CommentData, VideoData } from '../utils/youtubeApi';
+import type { CommentData, VideoData } from '../../utils/youtubeApi';
 
 interface VintageLayoutProps {
   ctx: CanvasRenderingContext2D;
