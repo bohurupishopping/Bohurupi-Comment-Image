@@ -20,31 +20,31 @@
         </filter>
         <radialGradient 
           id="grad0" 
-          cx="92.88793103448276%" 
-          cy="10.541310541310542%" 
-          r="60%"
+          cx="3.0172413793103448%" 
+          cy="1.8518518518518516%" 
+          r="65%"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stop-color="#f80d30" stop-opacity="1" />
-          <stop offset="15%" stop-color="#f80d30" stop-opacity="0.85" />
-          <stop offset="30%" stop-color="#f80d30" stop-opacity="0.6" />
-          <stop offset="50%" stop-color="#f80d30" stop-opacity="0.3" />
-          <stop offset="70%" stop-color="#f80d30" stop-opacity="0.1" />
-          <stop offset="100%" stop-color="#f80d30" stop-opacity="0" />
+          <stop offset="0%" stop-color="#6553e9" stop-opacity="1" />
+          <stop offset="15%" stop-color="#6553e9" stop-opacity="0.85" />
+          <stop offset="30%" stop-color="#6553e9" stop-opacity="0.6" />
+          <stop offset="50%" stop-color="#6553e9" stop-opacity="0.3" />
+          <stop offset="70%" stop-color="#6553e9" stop-opacity="0.1" />
+          <stop offset="100%" stop-color="#6553e9" stop-opacity="0" />
         </radialGradient>
         <radialGradient 
           id="grad1" 
-          cx="9.913793103448276%" 
-          cy="86.18233618233619%" 
-          r="60%"
+          cx="90.94827586206897%" 
+          cy="97.57834757834758%" 
+          r="65%"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0%" stop-color="#3f9ae9" stop-opacity="1" />
-          <stop offset="15%" stop-color="#3f9ae9" stop-opacity="0.85" />
-          <stop offset="30%" stop-color="#3f9ae9" stop-opacity="0.6" />
-          <stop offset="50%" stop-color="#3f9ae9" stop-opacity="0.3" />
-          <stop offset="70%" stop-color="#3f9ae9" stop-opacity="0.1" />
-          <stop offset="100%" stop-color="#3f9ae9" stop-opacity="0" />
+          <stop offset="0%" stop-color="#ec948e" stop-opacity="1" />
+          <stop offset="15%" stop-color="#ec948e" stop-opacity="0.85" />
+          <stop offset="30%" stop-color="#ec948e" stop-opacity="0.6" />
+          <stop offset="50%" stop-color="#ec948e" stop-opacity="0.3" />
+          <stop offset="70%" stop-color="#ec948e" stop-opacity="0.1" />
+          <stop offset="100%" stop-color="#ec948e" stop-opacity="0" />
         </radialGradient>
         </defs>
         <rect width="100%" height="100%" fill="white"/><g mix-blend-mode="normal">
@@ -54,6 +54,6 @@
           width="100%" 
           height="100%" 
           filter="url(#noise)" 
-          opacity="0.2"
+          opacity="0.75"
           fill="#ffffff" 
         /></svg>
