@@ -22,8 +22,12 @@ export const drawMinimalLayout = async ({
   canvas.width = 1024;
   canvas.height = 1024;
 
-  // Clean white background
-  ctx.fillStyle = '#ffffff';
+  // Clean gradient background
+  const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  bgGradient.addColorStop(0, '#ffffff');
+  bgGradient.addColorStop(0.5, '#f8fafc');
+  bgGradient.addColorStop(1, '#f1f5f9');
+  ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Left section (channel info) - 40% of width
@@ -277,8 +281,10 @@ const drawDefaultLeftBackground = (
   height: number
 ) => {
   const gradient = ctx.createLinearGradient(0, 0, 0, height);
-  gradient.addColorStop(0, '#1e40af');
-  gradient.addColorStop(1, '#1e3a8a');
+  gradient.addColorStop(0, '#1e3a8a');
+  gradient.addColorStop(0.3, '#1e40af');
+  gradient.addColorStop(0.7, '#1e3a8a');
+  gradient.addColorStop(1, '#172554');
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, width, height);
 };

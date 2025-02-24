@@ -112,11 +112,17 @@ export const drawDefaultLayout = async ({ ctx, comment, videoDetails, textSize }
   // Draw comment section with larger card and more rounded corners
   ctx.save();
   
-  // Comment box with enhanced styling and increased height
+  // Comment box with enhanced styling and gradient background
   ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
   ctx.shadowBlur = 20;
   ctx.shadowOffsetY = 5;
-  ctx.fillStyle = '#ffffff';
+  
+  // Create subtle white gradient for card background
+  const cardGradient = ctx.createLinearGradient(0, 380, 0, 780);
+  cardGradient.addColorStop(0, '#ffffff');
+  cardGradient.addColorStop(0.5, '#fafafa');
+  cardGradient.addColorStop(1, '#f8f8f8');
+  ctx.fillStyle = cardGradient;
   roundRect(ctx, 60, 380, canvas.width - 120, 400, 40);
 
   try {
@@ -221,8 +227,7 @@ export const drawDefaultLayout = async ({ ctx, comment, videoDetails, textSize }
     ctx.font = '16px "Inter", sans-serif';
     ctx.fillText(`Duration: ${videoDetails.duration}`, canvas.width / 2, bottomY);
 
-    // YouTube icon centered below duration
-    drawYouTubeIcon(ctx, canvas.width / 2 - 20, bottomY + 15, 40, 40);
+   
     
     ctx.restore();
   } catch (err) {
@@ -240,23 +245,6 @@ const loadImage = (src: string): Promise<HTMLImageElement> => {
   });
 };
 
-const drawYouTubeIcon = (
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number
-) => {
-  ctx.save();
-  ctx.fillStyle = '#FF0000';
-  ctx.beginPath();
-  ctx.moveTo(x + width/2, y);
-  ctx.lineTo(x + width, y + height/2);
-  ctx.lineTo(x + width/2, y + height);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
-};
 
 const roundRect = (
   ctx: CanvasRenderingContext2D,
