@@ -1,10 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Youtube } from 'lucide-react';
+import { Download, RefreshCw } from 'lucide-react';
 import type { CommentData, VideoData } from '../utils/youtubeApi';
 import { drawDefaultLayout } from './layouts/DefaultLayout';
 import { drawMinimalLayout } from './layouts/MinimalLayout';
 import { drawModernLayout } from './layouts/ModernLayout';
 import { drawVintageLayout } from './layouts/VintageLayout';
+import { drawSocialCardLayout } from './layouts/SocialCardLayout';
 
 interface QuotePreviewProps {
   comment: CommentData;
@@ -26,6 +27,7 @@ export default function QuotePreview({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,10 +41,7 @@ export default function QuotePreview({
 
     const drawImage = async () => {
       try {
-        // Canvas dimensions
-        canvas.width = 1200;
-        canvas.height = 1200;
-
+        setIsGenerating(true);
         // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -57,41 +56,88 @@ export default function QuotePreview({
           case 'vintage':
             await drawVintageLayout({ ctx, comment, videoDetails, background });
             break;
+          case 'social':
+            await drawSocialCardLayout({ ctx, comment, videoDetails, background });
+            break;
           default:
             await drawDefaultLayout({ ctx, comment, videoDetails, background, textSize });
             break;
         }
 
         setPreviewUrl(canvas.toDataURL('image/png'));
+        setError(null);
       } catch (err) {
         console.error('Error drawing image:', err);
         setError(`Error generating image: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      } finally {
+        setIsGenerating(false);
       }
     };
 
     drawImage();
   }, [comment, videoDetails, background, layout, textSize, commentPosition]);
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  const handleDownload = () => {
+    if (!previewUrl) return;
+    
+    const link = document.createElement('a');
+    link.href = previewUrl;
+    link.download = `youtube-quote-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6 bg-blue-50 p-10 rounded-3xl shadow-lg">
+    <div className="relative">
       <canvas ref={canvasRef} className="hidden" />
-      {previewUrl && (
-        <div className="rounded-3xl overflow-hidden shadow-2xl">
-          <img src={previewUrl} alt="Quote Preview" className="w-full h-auto" />
+      
+      {/* Loading State */}
+      {isGenerating && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-3xl z-10">
+          <div className="flex flex-col items-center space-y-4">
+            <RefreshCw className="w-8 h-8 text-red-600 animate-spin" />
+            <p className="text-gray-700 font-medium">Generating preview...</p>
+          </div>
         </div>
       )}
-      {previewUrl && (
-        <a
-          href={previewUrl}
-          download="quote.png"
-          className="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-        >
-          Download Image
-        </a>
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Preview */}
+      {previewUrl && !error && (
+        <div className="space-y-4 animate-fade-in">
+          <div className="relative overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5">
+            <img 
+              src={previewUrl} 
+              alt="Quote Preview" 
+              className="w-full h-auto"
+            />
+          </div>
+          
+          {/* Download Button */}
+          <button
+            onClick={handleDownload}
+            className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-red-700 text-white px-6 py-3 rounded-xl shadow-lg transform transition-all duration-200"
+          >
+            <Download className="w-5 h-5" />
+            <span className="font-medium">Download Image</span>
+          </button>
+        </div>
       )}
     </div>
   );

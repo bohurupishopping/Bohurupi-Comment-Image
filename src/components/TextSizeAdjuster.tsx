@@ -11,7 +11,7 @@ export function TextSizeAdjuster({ textSize, onTextSizeChange }: TextSizeAdjuste
       <label className="text-gray-700">Text Size:</label>
       <input
         type="range"
-        min={24}
+        min={14}
         max={72}
         value={textSize}
         onChange={(e) => onTextSizeChange(Number(e.target.value))}

@@ -10,130 +10,225 @@ interface DefaultLayoutProps {
 }
 
 export const drawDefaultLayout = async ({ ctx, comment, videoDetails, background, textSize }: DefaultLayoutProps) => {
-  // Increase canvas size to accommodate padding
   const canvas = ctx.canvas;
-  canvas.width = 1050; // 1080 + 30 (15px padding on each side) + 40 (20px additional padding on each side)
-  canvas.height = 1090; // 1080 + 30 (15px padding on each side)
+  canvas.width = 1024;
+  canvas.height = 1024;
 
-  // Create a gradient object
+  // Create a gradient background
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-
-  // Define the color stops for the gradient
-  gradient.addColorStop(0, '#ace0f9');  // Start color
-  gradient.addColorStop(1, '#fff1eb');  // End color
-
-  // Use the gradient as the fill style
+  gradient.addColorStop(0, '#ace0f9');
+  gradient.addColorStop(1, '#fff1eb');
   ctx.fillStyle = gradient;
-
-  // Fill the background with the gradient
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw background image if provided
-  if (background) {
-    try {
-      const backgroundImage = await loadImage(background);
-      ctx.save();
-      ctx.beginPath();
-      roundRect(ctx, 90, 70, canvas.width - 180, 270, 20);
-      ctx.clip();
-      ctx.drawImage(backgroundImage, 75, 55, canvas.width - 150, 300);
-      ctx.restore();
-    } catch (err) {
-      console.error('Error loading background image:', err);
-    }
-  } else {
-    // Improved gradient header with rounded corners
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    gradient.addColorStop(0, '#f87171');
-    gradient.addColorStop(1, '#dc2626');
-    ctx.fillStyle = gradient;
-    roundRect(ctx, 90, 70, canvas.width - 180, 270, 45);
+  // Draw video thumbnail in the header
+  try {
+    const thumbnailImage = await loadImage(videoDetails.videoThumbnailUrl);
+    ctx.save();
+    
+    // Draw thumbnail with enhanced shadow and rounded corners
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    roundRect(ctx, 40, 40, canvas.width - 80, 300, 30);
+    ctx.clip();
+    ctx.drawImage(thumbnailImage, 40, 40, canvas.width - 80, 300);
+    
+    // Add overlay gradient for better text visibility
+    const overlayGradient = ctx.createLinearGradient(0, 40, 0, 340);
+    overlayGradient.addColorStop(0, 'rgba(0, 0, 0, 0.4)');
+    overlayGradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
+    ctx.fillStyle = overlayGradient;
+    ctx.fillRect(40, 40, canvas.width - 80, 300);
+    
+    // Add duration badge
+    const durationWidth = ctx.measureText(videoDetails.duration).width + 40;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+    roundRect(ctx, canvas.width - durationWidth - 60, 60, durationWidth, 32, 6);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 16px "Inter", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(videoDetails.duration, canvas.width - durationWidth/2 - 60, 82);
+    
+    ctx.restore();
+  } catch (err) {
+    console.error('Error loading thumbnail:', err);
+    // Fallback gradient header
+    const headerGradient = ctx.createLinearGradient(0, 40, 0, 340);
+    headerGradient.addColorStop(0, '#f87171');
+    headerGradient.addColorStop(1, '#dc2626');
+    ctx.fillStyle = headerGradient;
+    roundRect(ctx, 40, 40, canvas.width - 80, 300, 30);
   }
 
-  // Draw channel logo
+  // Draw video stats in the header
+  ctx.save();
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 24px "Inter", sans-serif';
+  ctx.textAlign = 'center';
+  
+  const stats = [
+    { icon: '👁️', value: videoDetails.viewCount, label: 'Views' },
+    { icon: '❤️', value: videoDetails.likeCount, label: 'Likes' },
+    { icon: '💬', value: videoDetails.commentCount, label: 'Comments' }
+  ];
+  
+  const statSpacing = canvas.width / (stats.length + 1);
+  stats.forEach((stat, index) => {
+    const x = statSpacing * (index + 1);
+    const y = 160;
+    
+    // Draw stat with enhanced styling
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowBlur = 4;
+    
+    // Icon
+    ctx.font = '32px "Inter", sans-serif';
+    ctx.fillText(stat.icon, x, y);
+    
+    // Value
+    ctx.font = 'bold 28px "Inter", sans-serif';
+    ctx.fillText(stat.value, x, y + 40);
+    
+    // Label
+    ctx.font = '18px "Inter", sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillText(stat.label, x, y + 70);
+    ctx.restore();
+  });
+
+  // Draw video title in header
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 24px "Inter", sans-serif';
+  ctx.textAlign = 'center';
+  wrapText(ctx, videoDetails.title, canvas.width / 2, 260, canvas.width - 160, 36);
+  
+  // Draw publish date
+  ctx.font = '18px "Inter", sans-serif';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  ctx.fillText(videoDetails.publishedAt, canvas.width / 2, 310);
+  ctx.restore();
+
+  // Draw comment section with larger card and more rounded corners
+  ctx.save();
+  
+  // Comment box with enhanced styling and increased height
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetY = 5;
+  ctx.fillStyle = '#ffffff';
+  roundRect(ctx, 60, 380, canvas.width - 120, 400, 40);
+
+  try {
+    // Commenter profile
+    const commenterImage = await loadImage(comment.authorProfileImageUrl);
+    ctx.save();
+    
+    // Profile picture with enhanced effects
+    const profileSize = 100;
+    const profileX = canvas.width / 2 - profileSize / 2;
+    const profileY = 420;
+    
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.arc(profileX + profileSize/2, profileY + profileSize/2, profileSize/2 + 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#dc2626';
+    ctx.fill();
+    
+    ctx.beginPath();
+    ctx.arc(profileX + profileSize/2, profileY + profileSize/2, profileSize/2, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(commenterImage, profileX, profileY, profileSize, profileSize);
+    ctx.restore();
+
+    // Commenter name (centered)
+    ctx.fillStyle = '#1F2937';
+    ctx.font = 'bold 28px "Inter", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(comment.authorName, canvas.width / 2, profileY + profileSize + 40);
+
+    // Comment text with dynamic size and more space (centered)
+    ctx.fillStyle = '#374151';
+    ctx.font = `${textSize}px "Inter", sans-serif`;
+    ctx.textAlign = 'center';
+    wrapText(
+      ctx,
+      comment.text,
+      canvas.width / 2,
+      profileY + profileSize + 90,
+      canvas.width - 200,
+      textSize * 1.4
+    );
+  } catch (err) {
+    console.error('Error loading commenter image:', err);
+  }
+
+  // Draw channel section at bottom with clean centered design
   try {
     const channelImage = await loadImage(videoDetails.channelThumbnailUrl);
     ctx.save();
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-    ctx.shadowBlur = 15;
+    
+    // Channel logo centered
+    const logoSize = 80;
+    const logoX = canvas.width / 2 - logoSize / 2;
+    const logoY = canvas.height - 180;
+    
+    // Draw channel logo with subtle shadow
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
+    ctx.shadowBlur = 10;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, 320, 93, 0, Math.PI * 2);
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(canvas.width / 2, 320, 90, 0, Math.PI * 2);
+    ctx.arc(logoX + logoSize/2, logoY + logoSize/2, logoSize/2, 0, Math.PI * 2);
     ctx.clip();
-    ctx.drawImage(channelImage, canvas.width / 2 - 90, 231, 180, 180);
+    ctx.drawImage(channelImage, logoX, logoY, logoSize, logoSize);
     ctx.restore();
+
+    // Subtle separator line
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, 320, 93, 0, Math.PI * 2);
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 7;
+    ctx.moveTo(canvas.width * 0.3, logoY - 20);
+    ctx.lineTo(canvas.width * 0.7, logoY - 20);
     ctx.stroke();
+
+    // Channel info centered
+    ctx.textAlign = 'center';
+    
+    // Channel name with verification badge
+    ctx.fillStyle = '#1F2937';
+    ctx.font = 'bold 28px "Inter", sans-serif';
+    const channelNameY = logoY + logoSize + 25;
+    ctx.fillText(videoDetails.channelTitle, canvas.width / 2, channelNameY);
+    
+    if (videoDetails.isVerified) {
+      const nameWidth = ctx.measureText(videoDetails.channelTitle).width;
+      const badgeX = canvas.width / 2 + nameWidth/2 + 15;
+      
+      ctx.fillStyle = '#3B82F6';
+      ctx.beginPath();
+      ctx.arc(badgeX, channelNameY - 8, 12, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px "Inter", sans-serif';
+      ctx.fillText('✓', badgeX - 4, channelNameY - 4);
+    }
+
+    // Duration and YouTube icon with adjusted spacing
+    const bottomY = channelNameY + 25;
+    ctx.fillStyle = '#4B5563';
+    ctx.font = '16px "Inter", sans-serif';
+    ctx.fillText(`Duration: ${videoDetails.duration}`, canvas.width / 2, bottomY);
+
+    // YouTube icon centered below duration
+    drawYouTubeIcon(ctx, canvas.width / 2 - 20, bottomY + 15, 40, 40);
+    
+    ctx.restore();
   } catch (err) {
     console.error('Error loading channel logo:', err);
   }
-
-  // Title with improved styling
-  ctx.font = 'bold 56px Arial';
-  ctx.fillStyle = '#1F2937';
-  ctx.textAlign = 'center';
-  ctx.fillText('শ্রোতারা কি বলছেন?', canvas.width / 2, 480);
-
-  // Improved comment box with shadow and rounded corners
-  ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
-  ctx.shadowBlur = 15;
-  ctx.shadowOffsetY = 5;
-  ctx.fillStyle = '#FFFFFF';
-  roundRect(ctx, 110, 520, canvas.width - 220, 340, 40);
-  ctx.restore();
-
-  // Enhanced commentator profile picture with border and effect
-  try {
-    const commentatorImage = await loadImage(comment.authorProfileImageUrl);
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(185, 605, 47, 0, Math.PI * 2);
-    ctx.fillStyle = '#dc2626';
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(185, 605, 45, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(commentatorImage, 130, 560, 110, 89);
-    ctx.restore();
-  } catch (err) {
-    console.error('Error loading commentator profile image:', err);
-  }
-
-  // Comment author and text with improved styling
-  ctx.fillStyle = '#1F2937';
-  ctx.font = 'bold 40px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText(comment.authorName, 255, 600);
-  ctx.fillStyle = '#4B5563';
-  ctx.font = `${textSize}px Arial`;
-  wrapText(ctx, comment.text, 275, 645, canvas.width - 370, 38);
-
-  // Video title with improved styling
-  ctx.fillStyle = '#1F2937';
-  ctx.font = 'bold 26px Arial';
-  ctx.textAlign = 'center';
-  wrapText(
-    ctx,
-    videoDetails.title,
-    canvas.width / 2,
-    925,
-    canvas.width - 210,
-    38
-  );
-
-  // Improved YouTube icon and channel name
-  drawYouTubeIcon(ctx, canvas.width / 2 - 130, 1005, 45, 45);
-  ctx.fillStyle = '#4B5563';
-  ctx.font = 'bold 30px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText(videoDetails.channelTitle, canvas.width / 2 - 70, 1040);
 };
 
 const loadImage = (src: string): Promise<HTMLImageElement> => {
@@ -156,38 +251,12 @@ const drawYouTubeIcon = (
   ctx.save();
   ctx.fillStyle = '#FF0000';
   ctx.beginPath();
-  ctx.moveTo(x + width / 2, y);
-  ctx.lineTo(x + width, y + height / 2);
-  ctx.lineTo(x + width / 2, y + height);
+  ctx.moveTo(x + width/2, y);
+  ctx.lineTo(x + width, y + height/2);
+  ctx.lineTo(x + width/2, y + height);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
-};
-
-const wrapText = (
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  x: number,
-  y: number,
-  maxWidth: number,
-  lineHeight: number
-) => {
-  const words = text.split(' ');
-  let line = '';
-
-  for (let n = 0; n < words.length; n++) {
-    const testLine = line + words[n] + ' ';
-    const metrics = ctx.measureText(testLine);
-    const testWidth = metrics.width;
-    if (testWidth > maxWidth && n > 0) {
-      ctx.fillText(line, x, y);
-      line = words[n] + ' ';
-      y += lineHeight;
-    } else {
-      line = testLine;
-    }
-  }
-  ctx.fillText(line, x, y);
 };
 
 const roundRect = (
@@ -210,4 +279,32 @@ const roundRect = (
   ctx.quadraticCurveTo(x, y, x + radius, y);
   ctx.closePath();
   ctx.fill();
+};
+
+const wrapText = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number
+) => {
+  const words = text.split(' ');
+  let line = '';
+  let testLine = '';
+
+  for (let n = 0; n < words.length; n++) {
+    testLine = line + words[n] + ' ';
+    const metrics = ctx.measureText(testLine);
+    const testWidth = metrics.width;
+
+    if (testWidth > maxWidth && n > 0) {
+      ctx.fillText(line, x, y);
+      line = words[n] + ' ';
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, y);
 };

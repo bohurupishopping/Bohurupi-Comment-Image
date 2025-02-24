@@ -12,6 +12,12 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out;
 }
@@ -20,26 +26,77 @@
   animation: slideIn 0.5s ease-out;
 }
 
-body {
-  @apply bg-gray-100;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-.app-container {
-  @apply max-w-4xl mx-auto p-6;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.input-field {
-  @apply w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
 }
 
-.btn {
-  @apply font-bold py-2 px-4 rounded transition duration-300 ease-in-out;
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
 }
 
-.btn-primary {
-  @apply bg-blue-500 hover:bg-blue-600 text-white;
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
-.btn-secondary {
-  @apply bg-gray-500 hover:bg-gray-600 text-white;
+/* Custom range input styling */
+input[type="range"] {
+  @apply h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-6 h-6 bg-red-600 rounded-full shadow cursor-pointer transition-all duration-150;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  @apply bg-red-700 transform scale-110;
+}
+
+/* Custom select styling */
+select {
+  @apply appearance-none bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight cursor-pointer transition-all duration-150;
+}
+
+select:focus {
+  @apply outline-none border-red-500 ring-2 ring-red-200;
+}
+
+/* Button hover effects */
+.btn-hover-effect {
+  @apply relative overflow-hidden transition-all duration-300;
+}
+
+.btn-hover-effect::after {
+  content: '';
+  @apply absolute inset-0 bg-white opacity-0 transition-opacity duration-300;
+}
+
+.btn-hover-effect:hover::after {
+  @apply opacity-20;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:transform hover:scale-[1.02];
+}
+
+/* Input focus effects */
+.input-focus-effect {
+  @apply transition-all duration-300 focus:ring-2 focus:ring-red-200 focus:border-red-500 focus:outline-none;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-800;
 }

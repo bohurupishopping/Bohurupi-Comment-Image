@@ -11,8 +11,8 @@ interface VintageLayoutProps {
 export const drawVintageLayout = async ({ ctx, comment, videoDetails, background }: VintageLayoutProps) => {
   // Canvas dimensions
   const canvas = ctx.canvas;
-  canvas.width = 1200;
-  canvas.height = 1200;
+  canvas.width = 1024;
+  canvas.height = 1024;
 
   // Background
   ctx.fillStyle = '#f5f5dc';

@@ -18,6 +18,7 @@ const LayoutSelector: React.FC<LayoutSelectorProps> = ({ onSelect }) => {
           <option value="minimal">Minimal</option>
           <option value="modern">Modern</option>
           <option value="vintage">Vintage</option>
+          <option value="social">Social Card</option>
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
           <Layout className="w-4 h-4" />
