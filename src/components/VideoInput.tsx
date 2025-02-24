@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Youtube, Search } from 'lucide-react';
+import { extractVideoId } from '../utils/youtubeApi';
 
 interface VideoInputProps {
   onSubmit: (url: string) => void;
@@ -10,7 +11,10 @@ const VideoInput: React.FC<VideoInputProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(url);
+    const videoId = extractVideoId(url);
+    if (videoId) {
+      onSubmit(url);
+    }
   };
 
   return (

@@ -25,25 +25,28 @@ function App() {
     setVideoUrl(url);
     setError(null);
     setIsLoading(true);
-    const videoId = extractVideoId(url);
-    if (videoId) {
-      try {
-        const [fetchedComments, fetchedVideoDetails] = await Promise.all([
-          fetchVideoComments(videoId),
-          fetchVideoDetails(videoId),
-        ]);
-        setComments(fetchedComments);
-        setVideoDetails(fetchedVideoDetails);
-        setBackground('');
-        setSelectedComment(null);
-      } catch (err) {
-        console.error('Error fetching video data:', err);
-        setError('Failed to fetch video data. Please try again.');
-      } finally {
+    
+    try {
+      const videoId = await extractVideoId(url);
+      if (!videoId) {
+        setError('Invalid YouTube URL');
         setIsLoading(false);
+        return;
       }
-    } else {
-      setError('Invalid YouTube URL');
+
+      const [fetchedComments, fetchedVideoDetails] = await Promise.all([
+        fetchVideoComments(videoId),
+        fetchVideoDetails(videoId),
+      ]);
+      
+      setComments(fetchedComments);
+      setVideoDetails(fetchedVideoDetails);
+      setBackground('');
+      setSelectedComment(null);
+    } catch (err) {
+      console.error('Error fetching video data:', err);
+      setError('Failed to fetch video data. Please try again.');
+    } finally {
       setIsLoading(false);
     }
   };
