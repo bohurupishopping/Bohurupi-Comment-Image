@@ -9,7 +9,7 @@ export const loadImage = (src: string, fallbackSrc?: string): Promise<HTMLImageE
 
     img.onload = () => resolve(img);
     
-    img.onerror = async (error) => {
+    img.onerror = async () => {
       if (retryCount < maxRetries) {
         retryCount++;
         // Add cache buster to URL to prevent cached error responses
