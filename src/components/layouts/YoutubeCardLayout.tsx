@@ -38,21 +38,21 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
 
     // Draw video title on the gradient
     ctx.fillStyle = '#ffffff';
-    ctx.font = '600 28px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 34px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
     ctx.textAlign = 'center';
-    wrapText(ctx, videoDetails.title, canvas.width / 2, thumbnailHeight - gradientHeight/2, canvas.width - 100, 42);
+    wrapText(ctx, videoDetails.title, canvas.width / 2, thumbnailHeight - gradientHeight/2, canvas.width - 100, 50); // Increased lineHeight
     ctx.restore();
     
     // Add duration badge with improved styling
     ctx.save();
     const durationWidth = ctx.measureText(videoDetails.duration).width + 40;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-    roundRect(ctx, canvas.width - durationWidth - 20, 20, durationWidth, 32, 6);
+    roundRect(ctx, canvas.width - durationWidth - 30, 20, durationWidth, 38, 6); // Increased space
     ctx.fill();
     ctx.fillStyle = '#ffffff';
-    ctx.font = '600 18px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 20px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
     ctx.textAlign = 'center';
-    ctx.fillText(videoDetails.duration, canvas.width - durationWidth/2 - 20, 42);
+    ctx.fillText(videoDetails.duration, canvas.width - durationWidth/2 - 30, 46); // Increased space
     ctx.restore();
   } catch (err) {
     console.error('Error loading thumbnail:', err);
@@ -65,7 +65,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
   }
 
   // Main content section with enhanced card-like styling
-  const contentStartY = thumbnailHeight + 32; // Increased spacing
+  const contentStartY = thumbnailHeight + 40; // Increased spacing
   
   // Add subtle card shadow with improved depth
   ctx.save();
@@ -82,7 +82,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     ctx.save();
     
     // Channel avatar with improved styling
-    const avatarSize = 64; // Increased size
+    const avatarSize = 80; // Increased size
     const avatarX = (canvas.width - avatarSize) / 2; // Centered
     const avatarY = contentStartY;
     
@@ -103,34 +103,34 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     ctx.textAlign = 'center';
     
     // Channel name with larger font
-    ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 28px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
     ctx.fillStyle = '#0f0f0f';
-    ctx.fillText(videoDetails.channelTitle, canvas.width / 2, contentStartY + 90);
+    ctx.fillText(videoDetails.channelTitle, canvas.width / 2, contentStartY + 100); // Increased spacing
 
     // Verification badge
     if (videoDetails.isVerified) {
-      const badgeY = contentStartY + 82;
+      const badgeY = contentStartY + 92; // Increased spacing
       ctx.save();
       ctx.fillStyle = '#606060';
       ctx.beginPath();
-      ctx.arc(canvas.width / 2 + ctx.measureText(videoDetails.channelTitle).width / 2 + 20, badgeY, 10, 0, Math.PI * 2);
+      ctx.arc(canvas.width / 2 + ctx.measureText(videoDetails.channelTitle).width / 2 + 25, badgeY, 12, 0, Math.PI * 2); // Increased size
       ctx.fill();
       ctx.fillStyle = '#ffffff';
-      ctx.font = '600 14px -apple-system';
-      ctx.fillText('✓', canvas.width / 2 + ctx.measureText(videoDetails.channelTitle).width / 2 + 15, badgeY + 4);
+      ctx.font = '600 16px -apple-system'; // Increased font size
+      ctx.fillText('✓', canvas.width / 2 + ctx.measureText(videoDetails.channelTitle).width / 2 + 20, badgeY + 4); // Increased space
       ctx.restore();
     }
 
     // Channel stats with larger font
-    ctx.font = '400 18px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '400 20px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
     ctx.fillStyle = '#606060';
-    ctx.fillText(videoDetails.publishedAt, canvas.width / 2, contentStartY + 120);
+    ctx.fillText(videoDetails.publishedAt, canvas.width / 2, contentStartY + 130); // Increased spacing
   } catch (err) {
     console.error('Error loading channel image:', err);
   }
 
   // Video stats with improved icons and centered spacing
-  const statsY = contentStartY + 160; // Position after channel info
+  const statsY = contentStartY + 180; // Increased spacing
   
   // Stats with enhanced icons and improved layout
   const stats = [
@@ -141,13 +141,13 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
 
   // Calculate total width of stats with new spacing
   let totalWidth = 0;
-  const iconSpacing = 12; // Space between icon and value
-  const statSpacing = 64; // Space between stat groups
+  const iconSpacing = 16; // Increased space between icon and value
+  const statSpacing = 80; // Increased space between stat groups
 
-  ctx.font = '600 22px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+  ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
   stats.forEach((stat, index) => {
     const valueWidth = ctx.measureText(stat.value).width;
-    const iconWidth = 28; // Fixed icon width
+    const iconWidth = 32; // Increased icon width
     totalWidth += iconWidth + iconSpacing + valueWidth;
     if (index < stats.length - 1) totalWidth += statSpacing;
   });
@@ -160,18 +160,18 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     
     // Draw icon with enhanced styling
     ctx.fillStyle = stat.color;
-    ctx.font = '600 28px -apple-system';
+    ctx.font = '600 32px -apple-system'; // Increased icon size
     ctx.textBaseline = 'middle';
     ctx.fillText(stat.icon, statX, statsY);
     
     // Draw value with improved typography
     ctx.fillStyle = '#0F0F0F';
-    ctx.font = '600 22px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
-    const valueX = statX + 28 + iconSpacing;
+    ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
+    const valueX = statX + 32 + iconSpacing; // Increased space
     ctx.fillText(stat.value, valueX, statsY);
     
     // Calculate next stat position
-    statX += 28 + iconSpacing + ctx.measureText(stat.value).width + statSpacing;
+    statX += 32 + iconSpacing + ctx.measureText(stat.value).width + statSpacing;
     
     // Draw separator if not last item
     if (index < stats.length - 1) {
@@ -184,7 +184,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
 
 
   // Comments section with improved separation
-  const commentsStartY = statsY + 40;
+  const commentsStartY = statsY + 60; // Increased spacing
   
   // Section divider with enhanced styling
   ctx.strokeStyle = '#e5e7eb';
@@ -196,7 +196,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
 
   // Comments header centered
   ctx.fillStyle = '#0f0f0f';
-  ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+  ctx.font = '600 28px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
   ctx.textAlign = 'center';
   ctx.fillText('💬 Comments', canvas.width / 2, commentsStartY + 10);
 
@@ -207,7 +207,7 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     ctx.save();
     
     // Commenter avatar centered
-    const commentAvatarSize = 56;
+    const commentAvatarSize = 72; // Increased size
     const commentAvatarX = (canvas.width - commentAvatarSize) / 2;
     
     ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
@@ -225,13 +225,13 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     
     // Author name
     ctx.fillStyle = '#0f0f0f';
-    ctx.font = '600 22px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.font = '600 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
     ctx.fillText(comment.authorName, canvas.width / 2, commentY + commentAvatarSize + 30);
 
     // Comment text
     ctx.fillStyle = '#0f0f0f';
-    ctx.font = '400 24px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
-    wrapText(ctx, comment.text, canvas.width / 2, commentY + commentAvatarSize + 70, canvas.width - 100, 36);
+    ctx.font = '400 26px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif'; // Increased font size
+    wrapText(ctx, comment.text, canvas.width / 2, commentY + commentAvatarSize + 70, canvas.width - 100, 40); // Increased lineHeight
   } catch (err) {
     console.error('Error loading commenter image:', err);
   }
