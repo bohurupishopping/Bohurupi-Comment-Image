@@ -185,45 +185,80 @@ export const drawModernLayout = async ({ ctx, comment, videoDetails, background,
   ctx.stroke();
   ctx.restore();
 
+  // Draw video title at the top with modern styling
+  ctx.save();
+  ctx.fillStyle = textColor;
+  ctx.font = '500 32px "Inter", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = hasBackgroundImage ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.05)';
+  ctx.shadowBlur = hasBackgroundImage ? 3 : 1;
+  wrapText(ctx, videoDetails.title, canvas.width / 2, 120, 900, 40);
+  ctx.restore();
+
   // Draw channel information with modern styling
   try {
     const channelImage = await loadImage(videoDetails.channelThumbnailUrl);
     ctx.save();
     
     const channelSize = 90;
+    const channelY = 870; // Moved up from 900
     ctx.shadowColor = hasBackgroundImage ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
     ctx.shadowBlur = 20;
     
     // Modern border for channel logo
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, 900, channelSize / 2 + 3, 0, Math.PI * 2);
+    ctx.arc(canvas.width / 2, channelY, channelSize / 2 + 3, 0, Math.PI * 2);
     ctx.fillStyle = hasBackgroundImage ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
     ctx.fill();
     
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, 900, channelSize / 2, 0, Math.PI * 2);
+    ctx.arc(canvas.width / 2, channelY, channelSize / 2, 0, Math.PI * 2);
     ctx.clip();
     ctx.drawImage(
       channelImage,
       canvas.width / 2 - channelSize / 2,
-      900 - channelSize / 2,
+      channelY - channelSize / 2,
       channelSize,
       channelSize
     );
     ctx.restore();
+
+    // Draw video stats below channel logo
+    const stats = [
+      { icon: '👁️', value: videoDetails.viewCount, label: 'Views' },
+      { icon: '❤️', value: videoDetails.likeCount, label: 'Likes' },
+      { icon: '💬', value: videoDetails.commentCount, label: 'Comments' }
+    ];
+
+    const statSpacing = canvas.width / (stats.length + 1);
+    stats.forEach((stat, index) => {
+      const x = statSpacing * (index + 1);
+      const y = 960;
+
+      ctx.save();
+      ctx.fillStyle = textColor;
+      ctx.shadowColor = hasBackgroundImage ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+      ctx.shadowBlur = 4;
+      ctx.textAlign = 'center';
+
+      // Icon
+      ctx.font = '24px "Inter", sans-serif';
+      ctx.fillText(stat.icon, x, y);
+
+      // Value
+      ctx.font = '500 20px "Inter", sans-serif';
+      ctx.fillText(stat.value, x, y + 30);
+
+      // Label
+      ctx.font = '400 16px "Inter", sans-serif';
+      ctx.fillStyle = hasBackgroundImage ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)';
+      ctx.fillText(stat.label, x, y + 50);
+      ctx.restore();
+    });
+
   } catch (err) {
     console.error('Error loading channel logo:', err);
   }
-
-  // Draw video title with modern styling
-  ctx.save();
-  ctx.fillStyle = textColor;
-  ctx.font = '500 24px "Inter", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.shadowColor = hasBackgroundImage ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.05)';
-  ctx.shadowBlur = hasBackgroundImage ? 3 : 1;
-  wrapText(ctx, videoDetails.title, canvas.width / 2, 1000, 800, 30);
-  ctx.restore();
 
   // Draw modern YouTube branding
   const youtubeX = canvas.width / 2 - 130;

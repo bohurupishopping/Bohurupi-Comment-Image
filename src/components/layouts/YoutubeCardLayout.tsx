@@ -27,6 +27,20 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
     ctx.shadowBlur = 12;
     ctx.drawImage(thumbnailImage, 0, 0, canvas.width, thumbnailHeight);
+
+    // Add gradient overlay at the bottom of thumbnail
+    const gradientHeight = thumbnailHeight * 0.3;
+    const titleGradient = ctx.createLinearGradient(0, thumbnailHeight - gradientHeight, 0, thumbnailHeight);
+    titleGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    titleGradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+    ctx.fillStyle = titleGradient;
+    ctx.fillRect(0, thumbnailHeight - gradientHeight, canvas.width, gradientHeight);
+
+    // Draw video title on the gradient
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 28px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    wrapText(ctx, videoDetails.title, canvas.width / 2, thumbnailHeight - gradientHeight/2, canvas.width - 100, 42);
     ctx.restore();
     
     // Add duration badge with improved styling
@@ -115,53 +129,59 @@ export const drawSocialCardLayout = async ({ ctx, comment, videoDetails }: Socia
     console.error('Error loading channel image:', err);
   }
 
-  // Video title with larger font and centered
-  const titleY = contentStartY + 160;
-  ctx.fillStyle = '#0f0f0f';
-  ctx.font = '600 28px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
-  ctx.textAlign = 'center';
-  wrapText(ctx, videoDetails.title, canvas.width / 2, titleY, canvas.width - 100, 42);
-  
   // Video stats with improved icons and centered spacing
-  const statsY = titleY + 50;
-  ctx.font = '400 16px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
-  ctx.fillStyle = '#606060';
+  const statsY = contentStartY + 160; // Position after channel info
   
-  // Stats with enhanced icons
+  // Stats with enhanced icons and improved layout
   const stats = [
-    { icon: '▶', value: videoDetails.viewCount + ' views' },
-    { icon: '👍', value: videoDetails.likeCount },
-    { icon: '💬', value: videoDetails.commentCount }
+    { icon: '▶', value: videoDetails.viewCount + ' views', color: '#FF0000' },
+    { icon: '👍', value: videoDetails.likeCount, color: '#065FD4' },
+    { icon: '💬', value: videoDetails.commentCount, color: '#065FD4' }
   ];
 
-  // Calculate total width of stats
+  // Calculate total width of stats with new spacing
   let totalWidth = 0;
+  const iconSpacing = 12; // Space between icon and value
+  const statSpacing = 64; // Space between stat groups
+
+  ctx.font = '600 22px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
   stats.forEach((stat, index) => {
-    totalWidth += ctx.measureText(stat.icon + ' ' + stat.value).width;
-    if (index < stats.length - 1) totalWidth += 56; // Space between stats
+    const valueWidth = ctx.measureText(stat.value).width;
+    const iconWidth = 28; // Fixed icon width
+    totalWidth += iconWidth + iconSpacing + valueWidth;
+    if (index < stats.length - 1) totalWidth += statSpacing;
   });
 
   // Start position to center stats
   let statX = (canvas.width - totalWidth) / 2;
 
   stats.forEach((stat, index) => {
-    // Draw icon with larger size
-    ctx.fillStyle = '#606060';
-    ctx.font = '500 24px -apple-system';
+    ctx.save();
+    
+    // Draw icon with enhanced styling
+    ctx.fillStyle = stat.color;
+    ctx.font = '600 28px -apple-system';
+    ctx.textBaseline = 'middle';
     ctx.fillText(stat.icon, statX, statsY);
-    statX += 32;
     
-    // Draw value with enhanced typography
-    ctx.font = '500 20px -apple-system';
-    ctx.fillText(stat.value, statX, statsY);
-    statX += ctx.measureText(stat.value).width + 32;
+    // Draw value with improved typography
+    ctx.fillStyle = '#0F0F0F';
+    ctx.font = '600 22px -apple-system, BlinkMacSystemFont, Inter, Roboto, sans-serif';
+    const valueX = statX + 28 + iconSpacing;
+    ctx.fillText(stat.value, valueX, statsY);
     
-    // Draw separator with adjusted spacing
+    // Calculate next stat position
+    statX += 28 + iconSpacing + ctx.measureText(stat.value).width + statSpacing;
+    
+    // Draw separator if not last item
     if (index < stats.length - 1) {
-      ctx.fillText('•', statX - 16, statsY);
-      statX += 32;
+      ctx.fillStyle = '#E5E7EB';
+      ctx.fillRect(statX - statSpacing/2, statsY - 15, 2, 30);
     }
+    
+    ctx.restore();
   });
+
 
   // Comments section with improved separation
   const commentsStartY = statsY + 40;
