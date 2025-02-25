@@ -2,10 +2,10 @@ import { useRef, useEffect, useState } from 'react';
 import { Download, RefreshCw } from 'lucide-react';
 import type { CommentData, VideoData } from '../utils/youtubeApi';
 import { drawDefaultLayout } from './layouts/DefaultLayout';
-import { drawMinimalLayout } from './layouts/MinimalLayout';
-import { drawModernLayout } from './layouts/ModernLayout';
+import { drawMinimalLayout } from './layouts/ModernCardLayout';
+import { drawModernLayout } from './layouts/StandardLayout';
 import { drawVintageLayout } from './layouts/VintageLayout';
-import { drawSocialCardLayout } from './layouts/SocialCardLayout';
+import { drawSocialCardLayout } from './layouts/YoutubeCardLayout';
 
 interface QuotePreviewProps {
   comment: CommentData;
